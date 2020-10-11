@@ -6,7 +6,12 @@ const shouldAnalyseBundle = process.env.ANALYSE_BUNDLE
 
 module.exports = {
   siteMetadata: {
-    siteTitleAlt: `Minimal Blog - Gatsby Theme`,
+    siteTitle: `didadadida93`,
+    siteTitleAlt: `didadadida93's web page`,
+    siteUrl: `https://didadadida93.xyz`,
+    siteDescription: `My personal web page`,
+    siteLanguage: `en`,
+    author: `didadadida93`,
   },
   plugins: [
     {
@@ -14,6 +19,10 @@ module.exports = {
       // See the theme's README for all available options
       options: {
         navigation: [
+          {
+            title: `Projects`,
+            slug: `/projects`,
+          },
           {
             title: `Blog`,
             slug: `/blog`,
@@ -25,20 +34,10 @@ module.exports = {
         ],
         externalLinks: [
           {
-            name: `Twitter`,
-            url: `https://twitter.com/lekoarts_de`,
-          },
-          {
-            name: `Instagram`,
-            url: `https://www.instagram.com/lekoarts.de/`,
+            name: `Github`,
+            url: `https://github.com/didadadida93`,
           },
         ],
-      },
-    },
-    {
-      resolve: `gatsby-plugin-google-analytics`,
-      options: {
-        trackingId: process.env.GOOGLE_ANALYTICS_ID,
       },
     },
     `gatsby-plugin-sitemap`,

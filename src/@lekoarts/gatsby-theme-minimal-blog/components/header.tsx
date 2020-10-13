@@ -4,7 +4,7 @@ import { Flex } from "@theme-ui/components"
 import useMinimalBlogConfig from "@lekoarts/gatsby-theme-minimal-blog/src/hooks/use-minimal-blog-config"
 import ColorModeToggle from "@lekoarts/gatsby-theme-minimal-blog/src/components/colormode-toggle"
 import Navigation from "@lekoarts/gatsby-theme-minimal-blog/src/components/navigation"
-import HeaderTitle from "@lekoarts/gatsby-theme-minimal-blog/src/components/header-title"
+import HeaderTitle from "./header-title"
 import HeaderExternalLinks from "./header-external-links"
 
 const Header = () => {

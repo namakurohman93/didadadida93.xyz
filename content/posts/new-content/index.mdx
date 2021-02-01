@@ -1,0 +1,51 @@
+---
+title: Secure Express Web App with HTTPS
+date: 2021-01-18
+tags:
+  - SSL/TLS
+  - certbot
+  - Let's Encrypt
+---
+
+import Figcaption from "../../components/Figcaption"
+
+It is easy to setup [Express](https://expressjs.com) web app to run on http server, but what if we want to run it on https?
+
+![secure](./banner.jpg)
+<Figcaption><span>Photo by <a href="https://unsplash.com/@chrispanas?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">chris panas</a> on <a href="https://unsplash.com/s/photos/lock?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span></Figcaption>
+
+### What is HTTPS?
+HTTPS is secure version of HTTP that use SSL/TLS Protocol for authentication and encryption. What it mean by authentication is the server verified himself by providing SSL/TLS certificate that say the server is who they say they are so the client can trust the server. Furthemore the data that being sent from the server and client will be encrypted to keep it secure from eavesdroppers. So it's **important** to use HTTPS on your server.
+
+### Obtaining Certificate
+A Webserver can obtain their digital certificates from trusted third parties called certificate authorities (CAs). [Certbot](https://certbot.eff.org/about/) is a tool for webserver administrator to obtain digital certificate that signed by [Let's Encrypt](https://letsencrypt.org/about/) certificate authority (CA).
+
+> There is a lot of certificate authorities (CAs) out there, but the reason why choose Let's Encrypt is because it is **open** and (of course) **free**.
+
+To use certbot for obtaining certificate you can use `certonly` command. And the following arguments can be used based on your condition
+
+* `--webroot` argument can be added if you already have running server and you'd prefer not to stop it. By using this argument you need to specify top-level directory ("web root") containing the files served by your server using `--webroot-path` argument (or `-w` for short)
+* `--standalone` argument can be added if your application are not running. By using this argument, the certbot will start their own server and listening on port 80 in order to perform domain validation.
+* `--manual` argument can be added if you want to obtain certificate manually.
+
+For further detail on how to obtain certificate using certbot, you can read their [documentation](https://certbot.eff.org/docs/index.html).
+
+### Implement HTTPS
+I have an express app running on a server and can be accesed using this URL `http://test.didadadida93.xyz`. As you might know it still using HTTP protocol.
+```js
+const http = require("http")
+const express = require("express")
+const port = process.env.PORT || 80
+
+const app = express()
+
+app.get("/", function(request, response) {
+  response.send("<h1>Connection not secure</h1>")
+})
+
+const httpServer = http.createServer(app)
+
+httpServer.listen(port, function() {
+  console.log("listening on port %i", port)
+})
+```

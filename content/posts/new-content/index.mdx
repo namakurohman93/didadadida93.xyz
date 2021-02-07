@@ -22,16 +22,17 @@ A Webserver can obtain their digital certificates from trusted third parties cal
 
 > There is a lot of certificate authorities (CAs) out there, but the reason why choose Let's Encrypt is because it is **open** and (of course) **free**.
 
-To use certbot for obtaining certificate you can use `certonly` command. And the following arguments can be used based on your condition
+To use certbot for obtaining certificate you can use `certonly` command. And the following plugin can be used based on your condition
 
-* `--webroot` argument can be added if you already have running server and you'd prefer not to stop it. By using this argument you need to specify top-level directory ("web root") containing the files served by your server using `--webroot-path` argument (or `-w` for short)
-* `--standalone` argument can be added if your application are not running. By using this argument, the certbot will start their own server and listening on port 80 in order to perform domain validation.
-* `--manual` argument can be added if you want to obtain certificate manually.
+* `--webroot` plugin can be added if you already have running server and you'd prefer not to stop it. By using this plugin you need to specify top-level directory ("web root") containing the files served by your server using `--webroot-path` argument (or `-w` for short)
+* `--standalone` plugin can be added if your application are not running. By using this plugin, the certbot will start their own server and listening on port 80 in order to perform domain validation.
+* `--manual` plugin can be added if you want to obtain certificate manually.
 
 For further detail on how to obtain certificate using certbot, you can read their [documentation](https://certbot.eff.org/docs/index.html).
 
 ### Implement HTTPS
 I have an express app running on a server and can be accesed using this URL `http://test.didadadida93.xyz`. As you might know it still using HTTP protocol.
+
 ```js
 const http = require("http")
 const express = require("express")
@@ -49,3 +50,13 @@ httpServer.listen(port, function() {
   console.log("listening on port %i", port)
 })
 ```
+
+<Figcaption>Gambar browser ketika akses test.didadadida93.xyz tapi masih pake http</Figcaption>
+
+Since the server already running but I want to use HTTPS instead, I need to obtain digital certificate by using `--webroot` plugin from certbot. The command that I need to run on the server is
+
+```sh
+$ sudo certbot certonly --webroot --webroot-path ./public -d test.didadadida93.xyz
+```
+
+We set current `public` directory as web root path of express app. The `--webroot` plugin works by creating a temporary file in `{webroot-path}/.well-known/acme-challenge` and then the Let's Encrypt validation server makes HTTP requests to validate that the DNS of requested domain resolve to the server running certbot.

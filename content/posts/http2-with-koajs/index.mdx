@@ -1,0 +1,81 @@
+---
+title: Create Simple HTTP/2 Server With KoaJs
+date: 2021-02-15
+tags:
+  - HTTP/2
+  - KoaJs
+---
+
+import Figcaption from "../../components/Figcaption"
+
+It's been a year (give or take) I've using [Express](https://expressjs.com) and I just realized that Express still using HTTP/1.x.
+
+![banner](./banner.jpg)
+<Figcaption><span>Photo by <a href="https://unsplash.com/@alternateskate?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Alternate Skate</a> on <a href="https://unsplash.com/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span></Figcaption>
+
+### Then How to Create HTTP/2 Server on NodeJs?
+Once I know that Express still using HTTP/1.x, I start searching on _google_ which framework that use HTTP/2 protocol on NodeJs. Then I found [KoaJs](https://koajs.com/). Withouth further a do, I read the documentation and come up with this simple Koa app.
+
+```js
+const Koa = require("koa")
+const app = new Koa()
+const port = process.env.PORT || 80
+
+app.use(async ctx => {
+  ctx.body = "Hello World!\n"
+})
+
+app.listen(port, () => console.log("listening on port %i", port))
+```
+
+But when I run the server and make a request, it still use HTTP/1.x
+
+![http response](./http1-response.png)
+<br />
+
+I found that `app.listen` is a _syntatic sugar_ for running nodejs http module, so the code will be something like this
+
+```js {1,10-12}
+const http = require("http")
+const Koa = require("koa")
+const app = new Koa()
+const port = process.env.PORT || 80
+
+app.use(async ctx => {
+  ctx.body = "Hello World!\n"
+})
+
+http
+  .createServer(app.callback())
+  .listen(port, () => console.log("listening on port %i", port))
+```
+<br />
+
+Alright, so I know I can't use `app.listen` to start a server. So if I want to run http/2 server, then I need to modify the script a little bit so it start http/2 server.
+
+```js {1-2,11-14,16-17}
+const fs = require("fs")
+const http2 = require("http2")
+const Koa = require("koa")
+const app = new Koa()
+const port = process.env.PORT || 80
+
+app.use(async ctx => {
+  ctx.body = "Hello World!\n"
+})
+
+const options = {
+  key: fs.readFileSync("./private.key"),
+  cert: fs.readFileSync("./cert.crt")
+}
+
+http2
+  .createSecureServer(options, app.callback())
+  .listen(port, () => console.log("listening on port %i", port))
+```
+<br />
+
+> Please note that http2 module required you to run on HTTPS protocol so you need SSL certificate. There is a lot of article that help you to generate self-signed SSL certificate for development purpose.
+
+![http/2 response](./http2-response.png)
+

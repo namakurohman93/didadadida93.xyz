@@ -78,4 +78,46 @@ http2
 > Please note that http2 module required you to run on HTTPS protocol so you need SSL certificate. There is a lot of article that help you to generate self-signed SSL certificate for development purpose.
 
 ![http/2 response](./http2-response.png)
+<br />
 
+### Let's Create Simple Rest API
+By default, KoaJs didn't have method for define HTTP verb like ExpressJs. So if I want to create simple rest API using KoaJs but want to feel it like I'm using ExpressJs, I have to install _middleware_ to add this functionality.
+
+[In here](https://github.com/koajs/koa/wiki) you will find a lot of _middleware_ that can be use for KoaJs application. As for now I will use [@koa/router](https://github.com/koajs/router) since this module is provided by KoaJs. I update the code so it look like this
+
+```js {4,8,10-15,17}
+const fs = require("fs")
+const http2 = require("http2")
+const Koa = require("koa")
+const Router = require("@koa/router")
+const port = process.env.PORT || 443
+
+const app = new Koa()
+const router = new Router()
+
+router.get("/", (ctx, next) => {
+  ctx.body = { status: "Running!" }
+})
+router.get("/songs", (ctx, next) => {
+  ctx.body = JSON.parse(fs.readFileSync("./songs.json"))
+})
+
+app.use(router.routes())
+
+const options = {
+  key: fs.readFileSync("./private.key"),
+  cert: fs.readFileSync("./cert.crt")
+}
+
+http2
+  .createSecureServer(options, app.callback())
+  .listen(port, () => console.log("listening on port %i", port))
+```
+<br />
+
+And here is the response from the route that I just made.
+
+![response from /songs](./rest-response.jpg)
+<br />
+
+Now we can add new routes just like we using ExpressJs. Yeay 🤩

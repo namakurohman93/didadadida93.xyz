@@ -1,6 +1,6 @@
 # didadadida93.xyz
 Source of my personal webpage.  
-https://didadadida93.gtsb.io
+https://didadadida93.xyz
 
 ### Disclaimer
 I'm try my best to deliver what's my point. Since english is not my tongue

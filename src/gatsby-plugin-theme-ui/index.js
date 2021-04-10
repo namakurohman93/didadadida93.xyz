@@ -3,7 +3,7 @@ import { transparentize } from "@theme-ui/color"
 import { tailwind } from "@theme-ui/presets"
 
 const theme = merge(tailwind, {
-  initialColorModeName: `light`,
+  initialColorModeName: `dark`,
   useCustomProperties: true,
   colors: {
     primary: `#5390d9`,

@@ -1,5 +1,5 @@
 # didadadida93.xyz
-Source of my personal webpage.  
+Source of my personal webpage. Build using [Gatsby](https://www.gatsbyjs.com/) and deployed on [Cloudflare Pages](https://pages.cloudflare.com/).  
 https://didadadida93.xyz
 
 ### Disclaimer

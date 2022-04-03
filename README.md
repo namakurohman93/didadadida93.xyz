@@ -1,9 +1,12 @@
 # didadadida93.xyz
-Source of my personal webpage. Build using [Gatsby](https://www.gatsbyjs.com/) and deployed on [Cloudflare Pages](https://pages.cloudflare.com/).  
+Source code of my personal webpage. It use [Gatsby](https://www.gatsbyjs.com/)
+to build the page and I use [Cloudflare Pages](https://pages.cloudflare.com/)
+to deploy the page.  
 https://didadadida93.xyz
 
 ### Disclaimer
-I'm try my best to deliver what's my point. Since english is not my tongue
-you may see incorrect / inpropper words, so I would like if someone correcting
-it and make a pull request 😄  
-Thank you.
+English is not my first language but I do my best to explain it.
+If you see some mistakes on my webpage with grammar or word (or anything), I
+would love if you could raise a PR or an issue to point it out. I'll review or
+resolve it when I have time 😄.  
+Thanks.

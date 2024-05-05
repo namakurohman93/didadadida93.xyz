@@ -6,23 +6,21 @@ tags:
   - Docker
 ---
 
-import Figcaption from "../../components/Figcaption"
-
 There are many ways to serve static webpage and here I'll tell you on how to serve [Gatsby](https://www.gatsbyjs.com/) webpage using [Nginx](https://nginx.org/en/) on [Docker](https://www.docker.com/).
 
 ![engine x](./banner.jpg)
-<Figcaption><span>Photo by <a href="https://unsplash.com/@msilvaphoto?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Murilo Silva</a> on <a href="https://unsplash.com/s/photos/engine-x?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span></Figcaption>
+<span>Photo by <a href="https://unsplash.com/@msilvaphoto?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Murilo Silva</a> on <a href="https://unsplash.com/s/photos/engine-x?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
 
 ### Prepare the Webpage
 Here I will use [Gatsby](https://www.gatsbyjs.com/) for build webpage and using [Gatsby Starter Blog](https://www.gatsbyjs.com/starters/gatsbyjs/gatsby-starter-blog) so we can shorten development time. Using [Gatsby CLI Tool](https://www.gatsbyjs.com/docs/gatsby-cli/) we can start developing webpage by running this command
 
-```noLineNumbers
+```bash
 gatsby new webpage https://github.com/gatsbyjs/gatsby-starter-blog
 ```
 
 Change into webpage directory then start the development mode
 
-```noLineNumbers
+```bash
 cd webpage
 gatsby develop
 ```
@@ -35,7 +33,7 @@ This command starts a development server and you will be able to see your new si
 
 You can make a change on the content of webpage by adding and/or editing components. Once finished, now you need to _generate_ static webpage using this command
 
-```noLineNumbers
+```bash
 gatsby build
 ```
 
@@ -44,7 +42,7 @@ Gatsby `build` command produces a directory of static HTML, CSS and JavaScript f
 ### Configure Nginx
 Next we need to create config file so Nginx can serve our webpage. Here is the simplest Nginx config file for serving Gatsby webpage
 
-```:title=nginx.conf
+```nginx title=nginx.conf
 user              nginx;
 worker_processes  auto;
 
@@ -84,7 +82,7 @@ http  {
 ### Build an Image Docker
 Now that we have nginx config file we can now create our `Dockerfile`.
 
-```:title=Dockerfile
+```docker title=Dockerfile
 # build the webpage
 FROM node:lts AS build
 
@@ -111,7 +109,7 @@ We use [multi-stage builds](https://docs.docker.com/develop/develop-images/multi
 ### That's all
 And that's it how you using Nginx on Docker for serving Gatsby webpage. You can now build a Docker image and running it into Docker container.
 
-```noLineNumbers
+```bash
 docker build -t webpage:latest .
 docker run -d -p 80:80 --name my-webpage webpage:latest
 ```

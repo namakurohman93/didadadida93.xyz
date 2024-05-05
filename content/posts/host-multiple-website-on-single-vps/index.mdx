@@ -6,8 +6,6 @@ tags:
   - VPS
 ---
 
-import Figcaption from "../../components/Figcaption"
-
 Have you ever wander
 
 > _can I serve multiple website using only one VPS ?_
@@ -15,13 +13,13 @@ Have you ever wander
 Yes you can and here is how.
 
 ![multiple](./banner.jpg)
-<Figcaption><span>Photo by <a href="https://unsplash.com/@eprouzet?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Eric Prouzet</a> on <a href="https://unsplash.com/s/photos/multiple?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></span></Figcaption>
+<span>Photo by <a href="https://unsplash.com/@eprouzet?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Eric Prouzet</a> on <a href="https://unsplash.com/s/photos/multiple?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></span>
 
 ### How I do it
 I believe everyone have their own way to serve multiple website using only single VPS.
 As for me, I use [nginx](https://nginx.org/en/) as reverse proxy, so I can redirect incoming request to my localhost. I follow [this nginx.conf](https://www.nginx.com/resources/wiki/start/topics/examples/full/) configuration and change it as needed. Using the same configuration, I can setup several server blocks so I have several hosts on a single server.
 
-```:title=nginx.conf
+```nginx title=nginx.conf
 http {
       # omitted for brevity
 

@@ -1,0 +1,130 @@
+---
+title: Golang - Synchronize Async Callback
+date: 2025-05-18
+tags:
+  - Go
+---
+
+Worked on Golang project. The requirements were to interact with dll interop from C++ code.
+
+![gopher](./banner1.jpg)
+<span>Photo by <a href="https://unsplash.com/@geekgunda?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Chinmay B</a> on <a href="https://unsplash.com/photos/a-picture-of-a-cartoon-character-on-a-wall-fd9mIBluHkA?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a></span>
+
+### Interop
+Interop stands for interoperability, which refers to the ability of different programming languages or systems to work together and communicate effectively.
+So the system already there and one way to interact with it is through interop dll file.
+
+### C++ Function Signature
+In order to work with dll interop, they gave me a documentation of the dll's interop function signature.
+
+> While working on this project I found dealing with function signature involves an object will be trickier.
+
+As such, I would recomend to ask your senior developer to **make function signature using simple data type** such as `integer` and `string`.
+
+### Mechanism
+To interact with dll interop, the integration was designed around a **callback function**.
+Instead of directly calling dll interop function repeatedly to fetch data, the dll interop was built to **push data** whenever new data was available.
+This is classic pattern often used in real-time systems or event-driven architectures.
+
+The callback function received a JSON string which then need to be parsed and processed.  
+But first the received argument need to be converted into Go string.
+
+> I'd like to convert the argument as quickly as possible and passed all the heavy process
+(parse it into Go object, insert it into database) into goroutine.
+
+### Synchronizing
+The fact that I want to pass all the heavy process into goroutine and I dont know for sure when or how many callbacks get fired,
+synchronizing all goroutines will be a challenge.
+
+##### WaitGroup
+WaitGroup is more suitable for this case.
+
+> I dont know when or how many goroutines will be, but I'm sure I want to wait all of them to finish.
+
+### Code
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"syscall"
+	"unsafe"
+
+	"golang.org/x/sys/windows"
+)
+
+var wg sync.WaitGroup
+
+type DLLInterop struct {
+	handle windows.Handle
+}
+
+func (d DLLInterop) getProcAddress(procname string) uintptr {
+	addr, err := windows.GetProcAddress(d.handle, procname)
+	if err != nil {
+		panic(err)
+	}
+	return addr
+}
+
+func (d DLLInterop) FreeLibrary() {
+	windows.FreeLibrary(d.handle)
+}
+
+func (d DLLInterop) StartRequestData() uintptr {
+	return d.getProcAddress("StartRequestData")
+}
+
+func (d DLLInterop) RegisterCallback() uintptr {
+	return d.getProcAddress("RegisterCallback")
+}
+
+func NewInterop() DLLInterop {
+	handle, err := windows.LoadLibrary("/usr/libs/dlldummy.dll")
+	if err != nil {
+		panic(err)
+	}
+	return DLLInterop{handle}
+}
+
+func Callback(ret uintptr) uintptr {
+	if cStr := (*byte)(unsafe.Pointer(ret)); cStr != nil {
+		// increase WaitGroup so we can track how much
+		// goroutine has started
+		wg.Add(1)
+		go ProcessJson(windows.BytePtrToString(cStr))
+	} else {
+		fmt.Println("Failed to process return pointer from callback")
+	}
+	return 0
+}
+
+func ProcessJson(json string) {
+	// a heavy processes to convert json string
+	// and insert it into database
+	// etc..
+
+	// when all the heavy processes are done,
+	// call wg.Done() so main function know it's done
+	defer wg.Done()
+}
+
+func main() {
+	var interop DLLInterop = NewInterop()
+	defer interop.FreeLibrary()
+
+	// register callback to dll interop
+	callbackPtr := syscall.NewCallback(Callback)
+	syscall.SyscallN(uintptr(interop.RegisterCallback()), uintptr(callbackPtr))
+
+	// start request data and it is blocking
+	// at somepoint it will stop and we dont know when
+	// and when it stop we dont know if there are still goroutine out there
+	syscall.SyscallN(uintptr(interop.StartRequestData()))
+
+	// when it reach here it mean StartRequest has stopped
+	// wait for all goroutine to be done before closing main goroutine
+	wg.Wait()
+}
+```

@@ -8,14 +8,14 @@ const config: GatsbyConfig = {
     // You can overwrite values here that are used for the SEO component
     // You can also add new values here to query them like usual
     // See all options: https://github.com/LekoArts/gatsby-themes/blob/main/themes/gatsby-theme-minimal-blog/gatsby-config.mjs
-    siteTitle: `didadadida93`,
-    siteTitleAlt: `didadadida93's web page`,
-    siteHeadline: `didadadida93's web page`,
+    siteTitle: "namakurohman93",
+    siteTitleAlt: "namakurohman93's web page",
+    siteHeadline: "namakurohman93's web page",
     siteUrl: `https://didadadida93.xyz`,
-    siteDescription: `didadadida93 personal web page`,
+    siteDescription: `namakurohman93 personal web page`,
     siteImage: `/banner.jpg`,
     siteLanguage: `en`,
-    author: `didadadida93`,
+    author: "namakurohman93",
   },
   trailingSlash: `always`,
   plugins: [
